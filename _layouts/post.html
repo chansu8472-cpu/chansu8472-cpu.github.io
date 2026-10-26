@@ -17,13 +17,13 @@ layout: null
   {% assign category = page.categories | first %}
   {% assign label = category %}
   {% case category %}{% when "development" %}{% assign label = "개발" %}{% when "ctf-wargame" %}{% assign label = "CTF/Wargame" %}{% when "bug-bounty" %}{% assign label = "Bug Bounty" %}{% when "tech-writing" %}{% assign label = "블로그/기술문서" %}{% when "papers" %}{% assign label = "논문/컨퍼런스" %}{% when "activities" %}{% assign label = "공모전/자격증" %}{% endcase %}
-  <header class="top"><a class="brand" href="/">CHANSU<span>.LOG</span></a><a class="back" href="/categories.html#{{ category }}">← {{ label }} 글 목록</a></header>
+  <header class="top"><a class="brand" href="/">GMRTOR</a><a class="back" href="/categories.html?category={{ category }}">← {{ label }} 글 목록</a></header>
   <main class="article">
     <span class="category">{{ label }}</span>
     <div class="date">{{ page.date | date: "%Y.%m.%d" }}</div>
     <h1>{{ page.title | escape }}</h1>
     <article class="content">{{ content }}</article>
-    <nav class="foot"><a href="/">홈</a><a href="/categories.html#{{ category }}">카테고리 목록 ↑</a></nav>
+    <nav class="foot"><a href="/">홈</a><a href="/categories.html?category={{ category }}">카테고리 목록 ↑</a></nav>
   </main>
   <footer>© 2026 김찬수 · 배움의 과정을 기록합니다.</footer>
 </div>
