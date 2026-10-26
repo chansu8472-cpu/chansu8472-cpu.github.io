@@ -1,0 +1,12 @@
+title: 김찬수 | Field Notes
+description: 김찬수의 개발과 보안 학습 기록
+url: https://chansu8472-cpu.github.io
+markdown: kramdown
+permalink: /posts/:title/
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
