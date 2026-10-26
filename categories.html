@@ -41,5 +41,5 @@ permalink: /categories.html
   </main>
   <footer>© 2026 김찬수 · 배움의 과정을 기록합니다.</footer>
 </div>
-<script>(function(){var c=new Set(['development','ctf-wargame','bug-bounty','tech-writing','papers','activities']);var s=new URLSearchParams(location.search).get('category');if(!s||!c.has(s))return;document.querySelectorAll('.group').forEach(function(e){e.hidden=e.id!==s;});var a=document.getElementById(s);if(a)document.querySelector('.hero h1').textContent=a.querySelector('h2').textContent+' 글';})();</script></body>
+<script>(function(){var c=new Set(['development','ctf-wargame','bug-bounty','tech-writing','papers','activities']);var s=new URLSearchParams(location.search).get('category');if(!s||!c.has(s)){location.replace('/');return;}document.querySelectorAll('.group').forEach(function(e){e.hidden=e.id!==s;});var a=document.getElementById(s);if(a)document.querySelector('.hero h1').textContent=a.querySelector('h2').textContent+' 글';})();</script></body>
 </html>
