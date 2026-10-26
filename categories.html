@@ -1,0 +1,45 @@
+---
+layout: null
+permalink: /categories.html
+---
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="김찬수의 개발과 보안 학습 글을 주제별로 모아봅니다.">
+  <title>카테고리별 글 | 김찬수</title>
+  <style>
+    :root{--ink:#14232b;--muted:#65767b;--paper:#f5f4ef;--card:#fffefa;--line:#d9ded8;--green:#b8e36b;--deep:#101b24}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,Pretendard,"Noto Sans KR",system-ui,sans-serif;line-height:1.65}.wrap{width:min(1000px,calc(100% - 36px));margin:auto}a{color:inherit;text-decoration:none}.top{display:flex;justify-content:space-between;align-items:center;padding:22px 0;border-bottom:1px solid var(--line)}.brand{font:800 1rem ui-monospace,monospace;letter-spacing:.05em}.brand span{color:#648c2d}.back{color:#587b30;font-weight:700;font-size:.9rem}.hero{margin:32px 0 40px;padding:36px;border-radius:16px;background:var(--deep);color:#f5f4ef}.kicker{color:var(--green);font:700 .75rem ui-monospace,monospace;letter-spacing:.13em}h1{margin:8px 0;font-size:clamp(2rem,5vw,3.2rem);letter-spacing:-.05em}.hero p{margin:0;color:#c0cbca}.quick{display:flex;flex-wrap:wrap;gap:9px;margin:22px 0 48px}.quick a{padding:7px 12px;border:1px solid var(--line);border-radius:99px;background:var(--card);font-size:.84rem}.quick a:hover{border-color:#a9c77a}.group{margin:46px 0;scroll-margin-top:18px}.group-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:14px}.group-head .kicker{color:#65833a}.group h2{margin:4px 0 0;font-size:1.55rem;letter-spacing:-.04em}.count{color:var(--muted);font-size:.82rem}.post{display:block;margin:10px 0;padding:18px 20px;border:1px solid var(--line);border-radius:11px;background:var(--card);transition:border-color .15s,transform .15s}.post:hover{border-color:#a9c77a;transform:translateY(-2px)}.post h3{margin:0 0 4px;font-size:1.04rem}.post p{margin:0;color:var(--muted);font-size:.88rem}.date{color:#788687;font: .75rem ui-monospace,monospace}.empty{margin:0;padding:17px 19px;border-left:3px solid #a6ce5e;background:#edf0e6;color:#52615c;font-size:.9rem}footer{margin-top:60px;padding:22px 0 32px;border-top:1px solid var(--line);color:var(--muted);font-size:.8rem}@media(max-width:600px){.hero{padding:26px 22px}.group-head{align-items:flex-start;flex-direction:column}.top{align-items:flex-start;gap:12px;flex-direction:column}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><a class="brand" href="/">CHANSU<span>.LOG</span></a><a class="back" href="/">← 홈으로</a></header>
+  <main>
+    <section class="hero"><div class="kicker">POST ARCHIVE</div><h1>카테고리별 기록</h1><p>관심 주제별로 공부 과정과 활동을 모아봅니다.</p></section>
+    <nav class="quick" aria-label="카테고리 바로가기"><a href="#development">개발</a><a href="#ctf-wargame">CTF/Wargame</a><a href="#bug-bounty">Bug Bounty</a><a href="#tech-writing">블로그/기술문서</a><a href="#papers">논문/컨퍼런스</a><a href="#activities">공모전/자격증</a></nav>
+
+    <section class="group" id="development"><div class="group-head"><div><div class="kicker">01 / CODE</div><h2>개발</h2></div></div>
+      {% if site.categories.development %}{% assign items = site.categories.development | sort: "date" | reverse %}{% for post in items %}<a class="post" href="{{ post.url | relative_url }}"><span class="date">{{ post.date | date: "%Y.%m.%d" }}</span><h3>{{ post.title | escape }}</h3><p>{{ post.description | default: post.excerpt | strip_html | strip_newlines | truncate: 150 }}</p></a>{% endfor %}{% else %}<p class="empty">아직 등록된 글이 없습니다. 첫 글을 작성하면 이곳에 표시됩니다.</p>{% endif %}
+    </section>
+    <section class="group" id="ctf-wargame"><div class="group-head"><div><div class="kicker">02 / PRACTICE</div><h2>CTF/Wargame</h2></div></div>
+      {% if site.categories.ctf-wargame %}{% assign items = site.categories.ctf-wargame | sort: "date" | reverse %}{% for post in items %}<a class="post" href="{{ post.url | relative_url }}"><span class="date">{{ post.date | date: "%Y.%m.%d" }}</span><h3>{{ post.title | escape }}</h3><p>{{ post.description | default: post.excerpt | strip_html | strip_newlines | truncate: 150 }}</p></a>{% endfor %}{% else %}<p class="empty">아직 등록된 글이 없습니다. 첫 글을 작성하면 이곳에 표시됩니다.</p>{% endif %}
+    </section>
+    <section class="group" id="bug-bounty"><div class="group-head"><div><div class="kicker">03 / RESEARCH</div><h2>Bug Bounty</h2></div></div>
+      {% if site.categories.bug-bounty %}{% assign items = site.categories.bug-bounty | sort: "date" | reverse %}{% for post in items %}<a class="post" href="{{ post.url | relative_url }}"><span class="date">{{ post.date | date: "%Y.%m.%d" }}</span><h3>{{ post.title | escape }}</h3><p>{{ post.description | default: post.excerpt | strip_html | strip_newlines | truncate: 150 }}</p></a>{% endfor %}{% else %}<p class="empty">아직 등록된 글이 없습니다. 첫 글을 작성하면 이곳에 표시됩니다.</p>{% endif %}
+    </section>
+    <section class="group" id="tech-writing"><div class="group-head"><div><div class="kicker">04 / NOTES</div><h2>블로그/기술문서</h2></div></div>
+      {% if site.categories.tech-writing %}{% assign items = site.categories.tech-writing | sort: "date" | reverse %}{% for post in items %}<a class="post" href="{{ post.url | relative_url }}"><span class="date">{{ post.date | date: "%Y.%m.%d" }}</span><h3>{{ post.title | escape }}</h3><p>{{ post.description | default: post.excerpt | strip_html | strip_newlines | truncate: 150 }}</p></a>{% endfor %}{% else %}<p class="empty">아직 등록된 글이 없습니다. 첫 글을 작성하면 이곳에 표시됩니다.</p>{% endif %}
+    </section>
+    <section class="group" id="papers"><div class="group-head"><div><div class="kicker">05 / READING</div><h2>논문/컨퍼런스</h2></div></div>
+      {% if site.categories.papers %}{% assign items = site.categories.papers | sort: "date" | reverse %}{% for post in items %}<a class="post" href="{{ post.url | relative_url }}"><span class="date">{{ post.date | date: "%Y.%m.%d" }}</span><h3>{{ post.title | escape }}</h3><p>{{ post.description | default: post.excerpt | strip_html | strip_newlines | truncate: 150 }}</p></a>{% endfor %}{% else %}<p class="empty">아직 등록된 글이 없습니다. 첫 글을 작성하면 이곳에 표시됩니다.</p>{% endif %}
+    </section>
+    <section class="group" id="activities"><div class="group-head"><div><div class="kicker">06 / GROWTH</div><h2>공모전/자격증</h2></div></div>
+      {% if site.categories.activities %}{% assign items = site.categories.activities | sort: "date" | reverse %}{% for post in items %}<a class="post" href="{{ post.url | relative_url }}"><span class="date">{{ post.date | date: "%Y.%m.%d" }}</span><h3>{{ post.title | escape }}</h3><p>{{ post.description | default: post.excerpt | strip_html | strip_newlines | truncate: 150 }}</p></a>{% endfor %}{% else %}<p class="empty">아직 등록된 글이 없습니다. 첫 글을 작성하면 이곳에 표시됩니다.</p>{% endif %}
+    </section>
+  </main>
+  <footer>© 2026 김찬수 · 배움의 과정을 기록합니다.</footer>
+</div>
+</body>
+</html>
