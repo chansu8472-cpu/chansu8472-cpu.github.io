@@ -3,20 +3,116 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>내 블로그</title>
+  <meta name="description" content="김찬수의 개발과 보안 학습 기록">
+  <meta name="theme-color" content="#101b24">
+  <title>김찬수 | Field Notes</title>
+  <style>
+    :root { color-scheme: light; --ink:#14232b; --muted:#65767b; --paper:#f5f4ef; --card:#fffefa; --line:#d9ded8; --green:#b8e36b; --deep:#101b24; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font-family:Inter, Pretendard, "Noto Sans KR", system-ui, sans-serif; line-height:1.65; }
+    a { color:inherit; text-decoration:none; }
+    .wrap { width:min(1080px, calc(100% - 40px)); margin:auto; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; padding:24px 0; border-bottom:1px solid var(--line); }
+    .brand { font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-weight:800; letter-spacing:.06em; }
+    .brand span { color:#648c2d; }
+    .topbar small { color:var(--muted); font-size:.8rem; }
+    .hero { position:relative; overflow:hidden; margin:34px 0 54px; padding:clamp(34px,7vw,78px); border-radius:18px; background:var(--deep); color:#f5f4ef; }
+    .hero:after { content:""; position:absolute; width:360px; height:360px; right:-85px; top:-155px; border:1px solid rgba(184,227,107,.22); border-radius:50%; box-shadow:0 0 0 35px rgba(184,227,107,.04),0 0 0 70px rgba(184,227,107,.035); }
+    .eyebrow { display:flex; gap:10px; align-items:center; color:var(--green); font:700 .78rem ui-monospace,monospace; letter-spacing:.14em; text-transform:uppercase; }
+    .dot { width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 14px var(--green); }
+    h1 { max-width:680px; margin:22px 0 16px; font-size:clamp(2.5rem,7vw,5.5rem); line-height:1.08; letter-spacing:-.065em; }
+    h1 em { color:var(--green); font-style:normal; }
+    .intro { max-width:560px; color:#c0cbca; font-size:1.05rem; }
+    .hero-foot { display:flex; align-items:center; justify-content:space-between; gap:24px; margin-top:36px; }
+    .button { display:inline-flex; align-items:center; gap:12px; padding:12px 17px; border-radius:8px; background:var(--green); color:#17231d; font-weight:800; }
+    .hero-note { color:#9daead; font: .78rem ui-monospace,monospace; }
+    section { margin:64px 0; }
+    .section-head { display:flex; align-items:end; justify-content:space-between; gap:20px; margin-bottom:22px; }
+    .section-kicker { color:#65833a; font:700 .75rem ui-monospace,monospace; letter-spacing:.12em; text-transform:uppercase; }
+    h2 { margin:4px 0 0; font-size:clamp(1.7rem,4vw,2.35rem); letter-spacing:-.045em; }
+    .section-head p { margin:0; color:var(--muted); font-size:.9rem; }
+    .about { display:grid; grid-template-columns:1fr 1.5fr; gap:30px; padding:30px; border:1px solid var(--line); border-radius:14px; background:var(--card); }
+    .about-label { color:var(--muted); font: .8rem ui-monospace,monospace; }
+    .about p { margin:0; }
+    .tags { display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
+    .tag { padding:5px 10px; border:1px solid var(--line); border-radius:99px; color:#536369; font-size:.78rem; }
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .card { min-height:190px; display:flex; flex-direction:column; padding:22px; border:1px solid var(--line); border-radius:12px; background:var(--card); transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease; }
+    .card:hover { transform:translateY(-4px); border-color:#a9c77a; box-shadow:0 12px 28px rgba(27,48,39,.07); }
+    .card-top { display:flex; align-items:center; justify-content:space-between; color:#6b817e; font: .75rem ui-monospace,monospace; }
+    .card-icon { display:grid; place-items:center; width:34px; height:34px; border-radius:9px; background:#edf3e4; color:#54742b; font-weight:800; }
+    .card h3 { margin:20px 0 5px; font-size:1.14rem; letter-spacing:-.03em; }
+    .card p { margin:0; color:var(--muted); font-size:.87rem; }
+    .card .arrow { margin-top:auto; padding-top:18px; color:#71823e; font-size:.82rem; font-weight:700; }
+    .note { padding:20px 22px; border-left:3px solid #a6ce5e; background:#edf0e6; color:#52615c; font-size:.9rem; }
+    footer { display:flex; justify-content:space-between; gap:16px; padding:24px 0 34px; border-top:1px solid var(--line); color:var(--muted); font-size:.8rem; }
+    footer span:last-child { font-family:ui-monospace,monospace; }
+    @media (max-width:720px) { .wrap{width:min(100% - 28px,560px)} .topbar{padding:18px 0} .hero{margin:20px 0 42px;padding:30px 24px} .hero-foot,.section-head,footer{align-items:flex-start;flex-direction:column} .hero-note{display:none} .about{grid-template-columns:1fr;gap:10px;padding:22px} .grid{grid-template-columns:1fr 1fr;gap:10px} .card{min-height:180px;padding:17px} }
+    @media (max-width:420px) { .grid{grid-template-columns:1fr} .card{min-height:160px} }
+    @media (prefers-reduced-motion:reduce) { html{scroll-behavior:auto} *,*::before,*::after{transition:none!important} }
+  </style>
 </head>
 <body>
-  <h1>안녕하세요, 김찬수입니다.</h1>
-  <p>보안과 개발을 공부하며 배운 내용을 기록합니다.</p>
+  <div class="wrap">
+    <header class="topbar">
+      <a class="brand" href="#home">CHANSU<span>.LOG</span></a>
+      <small>학습하고, 기록하고, 다시 시도하기</small>
+    </header>
 
-  <h2>카테고리</h2>
-  <ul>
-    <li>개발</li>
-    <li>CTF/Wargame</li>
-    <li>Bug Bounty</li>
-    <li>블로그/기술문서</li>
-    <li>논문/컨퍼런스</li>
-    <li>공모전/자격증</li>
-  </ul>
+    <main>
+      <section class="hero" id="home" aria-labelledby="hero-title">
+        <div class="eyebrow"><span class="dot"></span> Personal field notes</div>
+        <h1 id="hero-title">안녕하세요,<br><em>김찬수</em>입니다.</h1>
+        <p class="intro">개발과 보안을 공부하며 마주친 질문과 해결 과정을 차곡차곡 기록합니다. 작은 실험도 다음 배움으로 이어지도록 정리합니다.</p>
+        <div class="hero-foot">
+          <a class="button" href="#categories">기록 둘러보기 <span aria-hidden="true">↓</span></a>
+          <span class="hero-note">BUILD · BREAK · LEARN · REPEAT</span>
+        </div>
+      </section>
+
+      <section id="about" aria-labelledby="about-title">
+        <div class="section-head">
+          <div><div class="section-kicker">01 / About</div><h2 id="about-title">이 블로그에 대하여</h2></div>
+          <p>배움의 흔적을 남기는 공간</p>
+        </div>
+        <div class="about">
+          <div class="about-label">WHO I AM</div>
+          <div>
+            <p>저는 김찬수입니다. 개발과 정보보안을 배우며 알게 된 내용을 제 언어로 정리하고, 꾸준히 성장하는 과정을 기록하고 있습니다.</p>
+            <div class="tags"><span class="tag">개발</span><span class="tag">정보보안</span><span class="tag">학습 기록</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="categories" aria-labelledby="categories-title">
+        <div class="section-head">
+          <div><div class="section-kicker">02 / Index</div><h2 id="categories-title">관심 분야와 기록</h2></div>
+          <p>주제를 눌러 해당 기록을 모아볼 수 있어요.</p>
+        </div>
+        <div class="grid">
+          <a class="card" href="#development"><div class="card-top"><span>01 / CODE</span><span class="card-icon">&lt;/&gt;</span></div><h3>개발</h3><p>개발 공부와 프로젝트에서 배운 것</p><span class="arrow">기록 보기 ↗</span></a>
+          <a class="card" href="#ctf"><div class="card-top"><span>02 / PRACTICE</span><span class="card-icon">⌘</span></div><h3>CTF/Wargame</h3><p>문제 풀이와 분석 과정</p><span class="arrow">기록 보기 ↗</span></a>
+          <a class="card" href="#bounty"><div class="card-top"><span>03 / RESEARCH</span><span class="card-icon">◎</span></div><h3>Bug Bounty</h3><p>취약점 조사와 보안 학습 노트</p><span class="arrow">기록 보기 ↗</span></a>
+          <a class="card" href="#writing"><div class="card-top"><span>04 / NOTES</span><span class="card-icon">✎</span></div><h3>블로그/기술문서</h3><p>기술 개념과 시행착오를 글로 정리</p><span class="arrow">기록 보기 ↗</span></a>
+          <a class="card" href="#papers"><div class="card-top"><span>05 / READING</span><span class="card-icon">⌕</span></div><h3>논문/컨퍼런스</h3><p>읽고 들은 내용을 요약하고 생각하기</p><span class="arrow">기록 보기 ↗</span></a>
+          <a class="card" href="#activities"><div class="card-top"><span>06 / GROWTH</span><span class="card-icon">↗</span></div><h3>공모전/자격증</h3><p>도전과 활동, 준비 과정 기록</p><span class="arrow">기록 보기 ↗</span></a>
+        </div>
+      </section>
+
+      <section aria-labelledby="archive-title">
+        <div class="section-head">
+          <div><div class="section-kicker">03 / Archive</div><h2 id="archive-title">카테고리 안내</h2></div>
+          <p>새 글을 작성하면 이곳에 주제별로 모아둘 예정입니다.</p>
+        </div>
+        <div class="note">아직 첫 글을 준비하고 있어요. 배운 것을 하나씩 정리해 각 카테고리에 업데이트하겠습니다.</div>
+        <div aria-hidden="true" style="height:1px;overflow:hidden">
+          <span id="development">개발 기록</span><span id="ctf">CTF/Wargame 기록</span><span id="bounty">Bug Bounty 기록</span><span id="writing">기술문서 기록</span><span id="papers">논문/컨퍼런스 기록</span><span id="activities">공모전/자격증 기록</span>
+        </div>
+      </section>
+    </main>
+
+    <footer><span>© 2026 김찬수 · 배움의 과정을 기록합니다.</span><span>MADE WITH CURIOSITY</span></footer>
+  </div>
 </body>
 </html>
