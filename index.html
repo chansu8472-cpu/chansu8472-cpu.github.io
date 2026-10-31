@@ -17,13 +17,16 @@
     .brand { font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-weight:800; letter-spacing:.06em; }
     .brand span { color:#7dd3fc; }
     .topbar small { color:var(--muted); font-size:.8rem; }
-    .hero { position:relative; overflow:hidden; margin:34px 0 54px; padding:clamp(34px,7vw,78px); border-radius:18px; background:var(--deep); color:#f5f4ef; }
+    .hero { position:relative; display:grid; grid-template-columns:minmax(0,1fr) minmax(190px,270px); align-items:center; gap:28px; overflow:hidden; margin:34px 0 54px; padding:clamp(34px,7vw,78px); border-radius:18px; background:var(--deep); color:#f5f4ef; }
+    .hero-copy { position:relative; z-index:2; min-width:0; max-width:640px; }
+    .hero-mascot { display:block; position:relative; z-index:1; width:100%; max-height:420px; object-fit:contain; filter:drop-shadow(0 16px 30px rgba(167,139,250,.16)); }
     .hero:after { content:""; position:absolute; width:360px; height:360px; right:-85px; top:-155px; border:1px solid rgba(125,211,252,.24); border-radius:50%; box-shadow:0 0 0 35px rgba(125,211,252,.05),0 0 0 70px rgba(167,139,250,.05); }
     .eyebrow { display:flex; gap:10px; align-items:center; color:var(--green); font:700 .78rem ui-monospace,monospace; letter-spacing:.14em; text-transform:uppercase; }
     .dot { width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 14px var(--green); }
-    h1 { max-width:680px; margin:22px 0 16px; font-size:clamp(2.5rem,7vw,5.5rem); line-height:1.08; letter-spacing:-.065em; }
+    h1 { max-width:100%; margin:22px 0 16px; font-size:clamp(2.4rem,5.4vw,4.6rem); line-height:1.08; letter-spacing:-.065em; }
     h1 em { color:var(--green); font-style:normal; }
-    .intro { max-width:560px; color:#c0cbca; font-size:1.05rem; }
+    .affiliation { margin:-6px 0 14px; color:#8993ab; font-size:.88rem; letter-spacing:.02em; }
+    .intro { max-width:500px; color:#c0cbca; font-size:1.05rem; }
     .hero-foot { display:flex; align-items:center; justify-content:space-between; gap:24px; margin-top:36px; }
     .button { display:inline-flex; align-items:center; gap:12px; padding:12px 17px; border-radius:8px; background:linear-gradient(110deg,#38bdf8,#a78bfa); color:#101326; font-weight:800; }
     .hero-note { color:#9daead; font: .78rem ui-monospace,monospace; }
@@ -48,7 +51,7 @@
     .note { padding:20px 22px; border-left:3px solid #60a5fa; background:#000000; color:#bdc8e2; font-size:.9rem; }
     footer { display:flex; justify-content:space-between; gap:16px; padding:24px 0 34px; border-top:1px solid var(--line); color:var(--muted); font-size:.8rem; }
     footer span:last-child { font-family:ui-monospace,monospace; }
-    @media (max-width:720px) { .wrap{width:min(100% - 28px,560px)} .topbar{padding:18px 0} .hero{margin:20px 0 42px;padding:30px 24px} .hero-foot,.section-head,footer{align-items:flex-start;flex-direction:column} .hero-note{display:none} .about{grid-template-columns:1fr;gap:10px;padding:22px} .grid{grid-template-columns:1fr 1fr;gap:10px} .card{min-height:180px;padding:17px} }
+    @media (max-width:720px) { .wrap{width:min(100% - 28px,560px)} .topbar{padding:18px 0} .hero{grid-template-columns:1fr;gap:12px;margin:20px 0 42px;padding:30px 24px} .hero-copy{width:100%} .hero-mascot{width:min(58vw,220px);max-height:220px;justify-self:end;margin-top:-22px;margin-bottom:-18px} h1{font-size:clamp(2.4rem,9vw,4rem)} .hero-foot,.section-head,footer{align-items:flex-start;flex-direction:column} .hero-note{display:none} .about{grid-template-columns:1fr;gap:10px;padding:22px} .grid{grid-template-columns:1fr 1fr;gap:10px} .card{min-height:180px;padding:17px} }
     @media (max-width:420px) { .grid{grid-template-columns:1fr} .card{min-height:160px} }
     @media (prefers-reduced-motion:reduce) { html{scroll-behavior:auto} *,*::before,*::after{transition:none!important} }
   </style>
@@ -62,13 +65,17 @@
 
     <main>
       <section class="hero" id="home" aria-labelledby="hero-title">
-        <div class="eyebrow"><span class="dot"></span> Personal field notes</div>
-        <h1 id="hero-title">안녕하세요,<br><em>KERT_김찬수(GMRTOR)</em> 입니다.</h1>
-        <p class="intro">개발과 보안을 공부하며 마주친 질문과 해결 과정을 차곡차곡 기록합니다. 작은 실험도 다음 배움으로 이어지도록 정리합니다.</p>
-        <div class="hero-foot">
-          <a class="button" href="#categories">기록 둘러보기 <span aria-hidden="true">↓</span></a>
-          <span class="hero-note">BUILD · BREAK · LEARN · REPEAT</span>
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="dot"></span> Personal field notes</div>
+          <h1 id="hero-title">안녕하세요,<br><em>KERT_김찬수(GMRTOR)</em> 입니다.</h1>
+          <p class="affiliation">경북대학교 컴퓨터학부 KERT 소속</p>
+          <p class="intro">개발과 보안을 공부하며 마주친 질문과 해결 과정을 차곡차곡 기록합니다. 작은 실험도 다음 배움으로 이어지도록 정리합니다.</p>
+          <div class="hero-foot">
+            <a class="button" href="#categories">기록 둘러보기 <span aria-hidden="true">↓</span></a>
+            <span class="hero-note">BUILD · BREAK · LEARN · REPEAT</span>
+          </div>
         </div>
+        <img class="hero-mascot" src="/duck-transparent.png" alt="컴퓨터를 공부하는 오리 캐릭터">
       </section>
 
       <section id="about" aria-labelledby="about-title">
