@@ -19,8 +19,8 @@
     .topbar small { color:var(--muted); font-size:.8rem; }
     .hero { position:relative; display:grid; grid-template-columns:minmax(0,1fr) minmax(190px,270px); align-items:center; gap:28px; overflow:hidden; margin:34px 0 54px; padding:clamp(34px,7vw,78px); border-radius:18px; background:var(--deep); color:#f5f4ef; }
     .hero-copy { position:relative; z-index:2; min-width:0; max-width:640px; }
-    .hero-mascot { display:block; position:relative; z-index:1; width:100%; max-height:420px; object-fit:contain; filter:drop-shadow(0 16px 30px rgba(167,139,250,.16)); }
-    .hero:after { content:""; position:absolute; width:360px; height:360px; right:-85px; top:-155px; border:1px solid rgba(125,211,252,.24); border-radius:50%; box-shadow:0 0 0 35px rgba(125,211,252,.05),0 0 0 70px rgba(167,139,250,.05); }
+    .hero-mascot { display:block; position:relative; z-index:1; width:100%; max-height:420px; object-fit:contain; filter:none; }
+    .hero:after { content:none; }
     .eyebrow { display:flex; gap:10px; align-items:center; color:var(--green); font:700 .78rem ui-monospace,monospace; letter-spacing:.14em; text-transform:uppercase; }
     .dot { width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 14px var(--green); }
     h1 { max-width:100%; margin:22px 0 16px; font-size:clamp(2.4rem,5.4vw,4.6rem); line-height:1.08; letter-spacing:-.065em; }
