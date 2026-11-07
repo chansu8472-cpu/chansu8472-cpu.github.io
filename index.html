@@ -16,7 +16,10 @@
     .topbar { display:flex; align-items:center; justify-content:space-between; padding:24px 0; border-bottom:1px solid var(--line); }
     .brand { font-family:ui-monospace, SFMono-Regular, Menlo, monospace; font-weight:800; letter-spacing:.06em; }
     .brand span { color:#7dd3fc; }
+    .topbar-tools { display:flex; align-items:center; gap:20px; }
     .topbar small { color:var(--muted); font-size:.8rem; }
+    .admin-link { padding:7px 11px; border:1px solid var(--line); border-radius:8px; color:#a5a1ff; font-size:.8rem; font-weight:700; }
+    .admin-link:hover { border-color:#8b5cf6; }
     .hero { position:relative; display:grid; grid-template-columns:minmax(0,1fr) minmax(190px,270px); align-items:center; gap:28px; overflow:hidden; margin:34px 0 54px; padding:clamp(34px,7vw,78px); border-radius:18px; background:var(--deep); color:#f5f4ef; }
     .hero-copy { position:relative; z-index:2; min-width:0; max-width:640px; }
     .hero-mascot { display:block; position:relative; z-index:1; width:100%; max-height:420px; object-fit:contain; filter:none; }
@@ -51,7 +54,7 @@
     .note { padding:20px 22px; border-left:3px solid #60a5fa; background:#000000; color:#bdc8e2; font-size:.9rem; }
     footer { display:flex; justify-content:space-between; gap:16px; padding:24px 0 34px; border-top:1px solid var(--line); color:var(--muted); font-size:.8rem; }
     footer span:last-child { font-family:ui-monospace,monospace; }
-    @media (max-width:720px) { .wrap{width:min(100% - 28px,560px)} .topbar{padding:18px 0} .hero{grid-template-columns:1fr;gap:12px;margin:20px 0 42px;padding:30px 24px} .hero-copy{width:100%} .hero-mascot{width:min(58vw,220px);max-height:220px;justify-self:end;margin-top:-22px;margin-bottom:-18px} h1{font-size:clamp(2.4rem,9vw,4rem)} .hero-foot,.section-head,footer{align-items:flex-start;flex-direction:column} .hero-note{display:none} .about{grid-template-columns:1fr;gap:10px;padding:22px} .grid{grid-template-columns:1fr 1fr;gap:10px} .card{min-height:180px;padding:17px} }
+    @media (max-width:720px) { .wrap{width:min(100% - 28px,560px)} .topbar{padding:18px 0;align-items:flex-start;flex-direction:column;gap:10px}.topbar-tools{width:100%;justify-content:space-between} .hero{grid-template-columns:1fr;gap:12px;margin:20px 0 42px;padding:30px 24px} .hero-copy{width:100%} .hero-mascot{width:min(58vw,220px);max-height:220px;justify-self:end;margin-top:-22px;margin-bottom:-18px} h1{font-size:clamp(2.4rem,9vw,4rem)} .hero-foot,.section-head,footer{align-items:flex-start;flex-direction:column} .hero-note{display:none} .about{grid-template-columns:1fr;gap:10px;padding:22px} .grid{grid-template-columns:1fr 1fr;gap:10px} .card{min-height:180px;padding:17px} }
     @media (max-width:420px) { .grid{grid-template-columns:1fr} .card{min-height:160px} }
     @media (prefers-reduced-motion:reduce) { html{scroll-behavior:auto} *,*::before,*::after{transition:none!important} }
   </style>
@@ -60,7 +63,7 @@
   <div class="wrap">
     <header class="topbar">
       <a class="brand" href="#home">GMRTOR</a>
-      <small>학습하고, 기록하고, 다시 시도하기</small>
+      <div class="topbar-tools"><small>학습하고, 기록하고, 다시 시도하기</small><a class="admin-link" href="/admin.html">글 관리 ↗</a></div>
     </header>
 
     <main>
