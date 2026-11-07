@@ -12,7 +12,8 @@
     a{color:inherit;text-decoration:none}.wrap{width:min(880px,calc(100% - 32px));margin:auto}.top{display:flex;justify-content:space-between;align-items:center;padding:22px 0;border-bottom:1px solid var(--line)}.brand{font:800 1rem ui-monospace,monospace;letter-spacing:.06em}.back{color:var(--purple);font-size:.9rem;font-weight:700}
     .hero{padding:30px 0 18px}.kicker{color:var(--purple);font:700 .76rem ui-monospace,monospace;letter-spacing:.13em;text-transform:uppercase}.hero h1{margin:8px 0;font-size:clamp(2rem,6vw,3rem);line-height:1.15}.hero p{margin:0;color:var(--muted)}
     .panel{margin:18px 0 30px;padding:clamp(20px,4vw,30px);border:1px solid var(--line);border-radius:14px;background:var(--card)}h2{margin:0 0 10px;font-size:1.25rem}p{color:var(--muted)}.guide{padding:15px 17px;border-left:3px solid var(--blue);background:#080d17;font-size:.9rem}.guide ol{margin:8px 0 0;padding-left:20px}.guide a{color:#7dd3fc;text-decoration:underline;text-underline-offset:3px}.small{font-size:.82rem;color:var(--muted)}
-    label{display:block;margin:16px 0 6px;font-weight:700;font-size:.9rem}input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:#030408;color:var(--ink);font:inherit}input:focus,select:focus,textarea:focus{outline:2px solid #7c6fe0;outline-offset:1px}textarea{min-height:220px;resize:vertical}button,.button{display:inline-flex;justify-content:center;align-items:center;gap:8px;margin-top:14px;padding:10px 15px;border:0;border-radius:8px;background:linear-gradient(110deg,var(--blue),var(--purple));color:#111322;font:800 .9rem inherit;cursor:pointer}button:disabled{opacity:.55;cursor:wait}.secondary{background:#121626;color:var(--ink);border:1px solid var(--line)}.delete{margin:0;padding:7px 10px;background:#241018;color:#fecdd3;border:1px solid #51222f;font-size:.8rem}
+    label{display:block;margin:16px 0 6px;font-weight:700;font-size:.9rem}input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:#030408;color:var(--ink);font:inherit}input:focus,select:focus,textarea:focus{outline:2px solid #7c6fe0;outline-offset:1px}textarea{min-height:220px;resize:vertical}button,.button{display:inline-flex;justify-content:center;align-items:center;gap:8px;margin-top:14px;padding:10px 15px;border:0;border-radius:8px;background:linear-gradient(110deg,var(--blue),var(--purple));color:#111322;font:inherit;font-weight:800;font-size:.9rem;cursor:pointer}button:disabled{opacity:.55;cursor:wait}.secondary{background:#121626;color:var(--ink);border:1px solid var(--line)}.delete{margin:0;padding:7px 10px;background:#241018;color:#fecdd3;border:1px solid #51222f;font-size:.8rem}
+    .toolbar{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0;padding:10px;border:1px solid var(--line);border-radius:9px;background:#05070d}.tool{margin:0;padding:7px 10px;background:#121626;color:var(--ink);border:1px solid var(--line);font-size:.82rem}.tool:hover{border-color:var(--purple);color:#d9ccff}.editor-hint{margin:6px 0;color:var(--muted);font-size:.8rem}.preview{min-height:220px;padding:14px;border:1px solid var(--line);border-radius:8px;background:#030408;overflow-wrap:anywhere}.preview h2,.preview h3{margin:1em 0 .45em}.preview p{margin:.6em 0}.preview blockquote{margin:1em 0;padding:.2em 1em;border-left:3px solid var(--purple);background:#0a0b14;color:#cbd5e1}.preview pre{padding:12px;border-radius:8px;background:#11131d;overflow:auto}.preview code{font-family:ui-monospace,monospace;color:#c4b5fd}.preview a{color:#7dd3fc;text-decoration:underline}.preview table{border-collapse:collapse;width:100%}.preview th,.preview td{border:1px solid var(--line);padding:7px;text-align:left}.preview hr{border:0;border-top:1px solid var(--line)}
     .status{min-height:1.5em;margin:10px 0 0;color:#a5e1ff;font-size:.9rem}.error{color:#fda4af}.post-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid var(--line)}.post-row h3{margin:0;font-size:1rem}.post-meta{margin:3px 0 0;color:var(--muted);font-size:.8rem}.empty{padding:16px;border:1px dashed var(--line);border-radius:8px;color:var(--muted)}.row-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}.foot{margin:34px 0;padding:18px 0;border-top:1px solid var(--line);color:var(--muted);font-size:.82rem}
     [hidden]{display:none!important}@media(max-width:560px){.top{align-items:flex-start}.post-row{align-items:flex-start}.post-meta{max-width:240px}.hero{padding-top:24px}}
   </style>
@@ -51,7 +52,13 @@
             </select>
             <label for="date">작성 날짜</label><input id="date" name="date" type="date" required>
             <label for="description">짧은 소개</label><input id="description" name="description" maxlength="180" placeholder="목록에 표시할 한 줄 소개">
-            <label for="body">글 내용 (Markdown)</label><textarea id="body" name="body" required placeholder="## 배운 내용&#10;&#10;여기에 글을 작성하세요."></textarea>
+            <label for="body">글 내용</label>
+            <div class="toolbar" role="toolbar" aria-label="글 서식 도구">
+              <button class="tool" type="button" data-wrap="**" aria-label="굵게"><strong>B</strong> 굵게</button><button class="tool" type="button" data-wrap="*" aria-label="기울임"><em>I</em> 기울임</button><button class="tool" type="button" data-wrap="~~" aria-label="취소선"><s>S</s> 취소선</button><button class="tool" type="button" data-wrap="`" aria-label="인라인 코드">코드</button><button class="tool" type="button" data-prefix="## " aria-label="큰 제목">제목</button><button class="tool" type="button" data-prefix="### " aria-label="작은 제목">소제목</button><button class="tool" type="button" data-prefix="> " aria-label="인용">인용</button><button class="tool" type="button" data-prefix="- " aria-label="글머리 목록">• 목록</button><button class="tool" type="button" data-prefix="1. " aria-label="번호 목록">번호 목록</button><button class="tool" type="button" data-insert="[링크 이름](https://example.com)" aria-label="링크 삽입">링크</button><button class="tool" type="button" data-insert="```&#10;코드 입력&#10;```" aria-label="코드 블록">코드 블록</button><button class="tool" type="button" data-insert="| 항목 | 내용 |&#10;| --- | --- |&#10;| 예시 | 입력 |" aria-label="표 삽입">표</button><button class="tool" type="button" data-insert="&#10;---&#10;" aria-label="구분선 삽입">구분선</button><button id="preview-toggle" class="tool" type="button" aria-pressed="false">미리보기</button>
+            </div>
+            <p class="editor-hint">글자를 선택한 뒤 도구를 누르면 선택한 부분에 서식이 적용됩니다. 미리보기에서 게시될 모양을 확인할 수 있어요.</p>
+            <textarea id="body" name="body" placeholder="## 배운 내용&#10;&#10;여기에 글을 작성하세요."></textarea>
+            <div id="body-preview" class="preview" hidden aria-label="글 미리보기"></div>
             <button id="save-button" type="submit">글 저장</button>
           </form>
           <p id="write-status" class="status" role="status" aria-live="polite"></p>
@@ -83,6 +90,81 @@
   const loginPanel = byId("login-panel");
   const editor = byId("editor");
   const tokenInput = byId("token");
+
+  function escapeHtml(value) {
+    return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function renderMarkdown(source) {
+    const codeBlocks = [];
+    let text = source.replace(/```([^\n]*)\n([\s\S]*?)```/g, (_, lang, code) => {
+      codeBlocks.push("<pre><code>" + escapeHtml(code.replace(/\n$/, "")) + "</code></pre>");
+      return "\n@@CODE" + (codeBlocks.length - 1) + "@@\n";
+    });
+    text = escapeHtml(text);
+    text = text.replace(/^### (.+)$/gm, "<h3>$1</h3>").replace(/^## (.+)$/gm, "<h2>$1</h2>").replace(/^# (.+)$/gm, "<h2>$1</h2>");
+    text = text.replace(/^&gt; (.+)$/gm, "<blockquote>$1</blockquote>").replace(/^---+$/gm, "<hr>");
+    text = text.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/\*(.+?)\*/g, "<em>$1</em>").replace(/~~(.+?)~~/g, "<del>$1</del>").replace(/`([^`]+)`/g, "<code>$1</code>");
+    text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    const rows = text.split("\n");
+    const output = [];
+    let list = "";
+    function closeList() { if (list) { output.push("</" + list + ">"); list = ""; } }
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const codeMatch = row.match(/^@@CODE(\d+)@@$/);
+      if (codeMatch) { closeList(); output.push(codeBlocks[Number(codeMatch[1])]); continue; }
+      if (/^\s*\|.*\|\s*$/.test(row) && /^\s*\|[\s|:-]+\|\s*$/.test(rows[i + 1] || "")) {
+        closeList(); const headers = row.split("|").slice(1, -1).map((cell) => "<th>" + cell.trim() + "</th>"); i += 2;
+        let table = "<table><thead><tr>" + headers.join("") + "</tr></thead><tbody>";
+        while (i < rows.length && /^\s*\|.*\|\s*$/.test(rows[i])) { table += "<tr>" + rows[i].split("|").slice(1, -1).map((cell) => "<td>" + cell.trim() + "</td>").join("") + "</tr>"; i++; }
+        i--; output.push(table + "</tbody></table>"); continue;
+      }
+      const ordered = row.match(/^\d+\. (.*)$/); const unordered = row.match(/^- (.*)$/);
+      if (ordered || unordered) { const type = ordered ? "ol" : "ul"; if (list !== type) { closeList(); list = type; output.push("<" + list + ">"); } output.push("<li>" + (ordered || unordered)[1] + "</li>"); continue; }
+      closeList();
+      if (/^<h[23]>/.test(row) || row === "<hr>" || /^<blockquote>/.test(row)) output.push(row);
+      else if (row.trim()) output.push("<p>" + row + "</p>");
+    }
+    closeList();
+    return output.join("\n");
+  }
+
+  const bodyInput = byId("body");
+  document.querySelectorAll("[data-wrap], [data-prefix], [data-insert]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const start = bodyInput.selectionStart, end = bodyInput.selectionEnd;
+      const selected = bodyInput.value.slice(start, end);
+      if (button.dataset.wrap) {
+        const sample = selected || "강조할 내용";
+        const replacement = button.dataset.wrap + sample + button.dataset.wrap;
+        bodyInput.setRangeText(replacement, start, end, "select");
+        if (!selected) bodyInput.setSelectionRange(start + button.dataset.wrap.length, start + button.dataset.wrap.length + sample.length);
+      } else if (button.dataset.prefix) {
+        const lineStart = bodyInput.value.lastIndexOf("\n", Math.max(0, start - 1)) + 1;
+        const lineEndIndex = bodyInput.value.indexOf("\n", end);
+        const lineEnd = lineEndIndex < 0 ? bodyInput.value.length : lineEndIndex;
+        const block = bodyInput.value.slice(lineStart, lineEnd) || "내용 입력";
+        bodyInput.setRangeText(block.split("\n").map((line) => button.dataset.prefix + line).join("\n"), lineStart, lineEnd, "select");
+      } else {
+        const insertion = button.dataset.insert.replace(/&#10;/g, "\n");
+        bodyInput.setRangeText(insertion, start, end, "select");
+      }
+      bodyInput.focus(); bodyInput.dispatchEvent(new Event("input", {bubbles:true}));
+    });
+  });
+  byId("preview-toggle").addEventListener("click", (event) => {
+    const preview = byId("body-preview");
+    const showing = preview.hidden;
+    preview.hidden = !showing;
+    bodyInput.hidden = showing;
+    event.currentTarget.setAttribute("aria-pressed", String(showing));
+    event.currentTarget.textContent = showing ? "편집하기" : "미리보기";
+    if (showing) preview.innerHTML = renderMarkdown(bodyInput.value);
+  });
+  bodyInput.addEventListener("input", () => {
+    if (!byId("body-preview").hidden) byId("body-preview").innerHTML = renderMarkdown(bodyInput.value);
+  });
 
   function setStatus(id, message, isError) {
     const node = byId(id);
