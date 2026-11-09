@@ -22,7 +22,7 @@
   <div class="wrap">
     <header class="top"><a class="brand" href="/">GMRTOR</a><a class="back" href="/">← 홈으로</a></header>
     <main>
-      <section class="hero"><div class="kicker">AUTHOR AREA</div><h1>글 관리</h1><p>GitHub 계정을 확인한 뒤 글을 작성하거나 삭제할 수 있습니다.</p></section>
+      <section class="hero"><div class="kicker">AUTHOR AREA</div><h1>글 관리</h1><p>GitHub 계정을 확인한 뒤 글을 작성·수정·삭제할 수 있습니다.</p></section>
       <section id="login-panel" class="panel" aria-labelledby="login-title">
         <h2 id="login-title">작성자 확인</h2>
         <div class="guide">
@@ -88,6 +88,7 @@
   let token = "";
   let busy = false;
   let editingPost = null;
+  let loadedPosts = [];
   const byId = (id) => document.getElementById(id);
   const loginPanel = byId("login-panel");
   const editor = byId("editor");
@@ -182,10 +183,13 @@
       "X-GitHub-Api-Version":"2022-11-28"
     };
     if (opts.body) headers["Content-Type"] = "application/json";
-    const response = await fetch(API + path, {
-      method: opts.method || "GET",
+    const method = opts.method || "GET";
+    const url = method === "GET" ? API + path + (path.includes("?") ? "&" : "?") + "_=" + Date.now() : API + path;
+    const response = await fetch(url, {
+      method,
       headers,
-      body: opts.body ? JSON.stringify(opts.body) : undefined
+      body: opts.body ? JSON.stringify(opts.body) : undefined,
+      cache:"no-store"
     });
     if (response.status === 204) return null;
     let data = {};
@@ -194,6 +198,7 @@
       const message = response.status === 401 ? "토큰이 유효하지 않거나 만료되었습니다. 다시 확인해 주세요."
         : response.status === 403 ? "저장소의 Contents 읽기/쓰기 권한을 확인해 주세요."
         : response.status === 404 ? "저장소 또는 글을 찾을 수 없습니다. 토큰의 저장소 범위를 확인해 주세요."
+        : response.status === 409 ? "글이 다른 변경으로 갱신되어 저장하지 못했습니다. 목록을 새로고침한 뒤 다시 수정해 주세요."
         : (data.message || "GitHub 요청에 실패했습니다.");
       throw new Error(message);
     }
@@ -301,10 +306,10 @@
     }
   }
 
-  async function loadPosts() {
+  async function loadPosts(keepVisiblePosts) {
     if (!token) return;
-    setStatus("list-status", "글 목록을 불러오고 있습니다.");
-    byId("post-list").replaceChildren();
+    setStatus("list-status", keepVisiblePosts ? "수정 내용을 목록에 반영했습니다. 최신 기록을 확인하고 있습니다." : "글 목록을 불러오고 있습니다.");
+    if (!keepVisiblePosts) byId("post-list").replaceChildren();
     try {
       let files;
       try {
@@ -340,8 +345,13 @@
         } catch (_) {}
         return {name:file.name, path:file.path, sha:file.sha, title, category, description, date, markdown, createdAt, updatedAt};
       }));
-      posts.sort((a,b) => b.name.localeCompare(a.name));
-      renderPosts(posts);
+      posts.sort((a,b) => {
+        const aTime = new Date(a.updatedAt || a.date || 0).getTime() || 0;
+        const bTime = new Date(b.updatedAt || b.date || 0).getTime() || 0;
+        return bTime - aTime || b.name.localeCompare(a.name);
+      });
+      loadedPosts = posts;
+      renderPosts(loadedPosts);
       setStatus("list-status", posts.length ? "총 " + posts.length + "개의 글" : "아직 작성한 글이 없습니다.");
     } catch (error) {
       setStatus("list-status", error.message || "글 목록을 불러오지 못했습니다.", true);
@@ -449,13 +459,28 @@
     byId("save-button").disabled = true;
     setStatus("write-status", "GitHub 저장소에 글을 저장하고 있습니다.");
     try {
-      await request(apiContentsPath(path, false), token, {
+      const saved = await request(apiContentsPath(path, false), token, {
         method:"PUT",
         body:{message:(isEditing ? "Update post: " : "Add post: ") + title, content:encodeBase64(frontMatter), branch:BRANCH, ...(isEditing ? {sha:targetPost.sha} : {})}
       });
+      const committedAt = saved && saved.commit && ((saved.commit.committer && saved.commit.committer.date) || (saved.commit.author && saved.commit.author.date)) || new Date().toISOString();
+      const updatedPost = {
+        ...(isEditing ? targetPost : {}),
+        name:(saved && saved.content && saved.content.name) || (isEditing ? targetPost.name : path.split("/").pop()),
+        path,
+        sha:(saved && saved.content && saved.content.sha) || (isEditing ? targetPost.sha : ""),
+        title, category, description, date, markdown:frontMatter,
+        createdAt:isEditing ? (targetPost.createdAt || committedAt) : committedAt,
+        updatedAt:committedAt
+      };
+      loadedPosts = isEditing
+        ? loadedPosts.map((post) => post.path === path ? updatedPost : post)
+        : [updatedPost, ...loadedPosts];
+      loadedPosts.sort((a,b) => new Date(b.updatedAt || b.date || 0) - new Date(a.updatedAt || a.date || 0) || b.name.localeCompare(a.name));
+      renderPosts(loadedPosts);
       resetEditor();
-      setStatus("write-status", isEditing ? "수정 내용을 저장했습니다. Pages 배포 후 업데이트됩니다." : "글을 저장했습니다. Pages 배포 후 카테고리 목록에 나타납니다.");
-      await loadPosts();
+      setStatus("write-status", isEditing ? "수정 내용을 저장했습니다. 등록된 글 목록은 바로 갱신했고, 공개 페이지는 Pages 배포 후 반영됩니다." : "글을 저장했습니다. 등록된 글 목록은 바로 갱신했고, 공개 페이지는 Pages 배포 후 나타납니다.");
+      await loadPosts(true);
     } catch (error) {
       setStatus("write-status", error.message || "글을 저장하지 못했습니다.", true);
     } finally {
@@ -487,6 +512,7 @@
     token = "";
     resetEditor();
     byId("post-list").replaceChildren();
+    loadedPosts = [];
     editor.hidden = true;
     loginPanel.hidden = false;
     setStatus("login-status", "로그아웃했습니다. 토큰은 저장되지 않습니다.");
