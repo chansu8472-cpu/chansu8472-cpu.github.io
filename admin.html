@@ -14,7 +14,7 @@
     .panel{margin:18px 0 30px;padding:clamp(20px,4vw,30px);border:1px solid var(--line);border-radius:14px;background:var(--card)}h2{margin:0 0 10px;font-size:1.25rem}p{color:var(--muted)}.guide{padding:15px 17px;border-left:3px solid var(--blue);background:#080d17;font-size:.9rem}.guide ol{margin:8px 0 0;padding-left:20px}.guide a{color:#7dd3fc;text-decoration:underline;text-underline-offset:3px}.small{font-size:.82rem;color:var(--muted)}
     label{display:block;margin:16px 0 6px;font-weight:700;font-size:.9rem}input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:#030408;color:var(--ink);font:inherit}input:focus,select:focus,textarea:focus{outline:2px solid #7c6fe0;outline-offset:1px}textarea{min-height:220px;resize:vertical}button,.button{display:inline-flex;justify-content:center;align-items:center;gap:8px;margin-top:14px;padding:10px 15px;border:0;border-radius:8px;background:linear-gradient(110deg,var(--blue),var(--purple));color:#111322;font:inherit;font-weight:800;font-size:.9rem;cursor:pointer}button:disabled{opacity:.55;cursor:wait}.secondary{background:#121626;color:var(--ink);border:1px solid var(--line)}.delete{margin:0;padding:7px 10px;background:#241018;color:#fecdd3;border:1px solid #51222f;font-size:.8rem}
     .toolbar{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0;padding:10px;border:1px solid var(--line);border-radius:9px;background:#05070d}.tool{margin:0;padding:7px 10px;background:#121626;color:var(--ink);border:1px solid var(--line);font-size:.82rem}.tool:hover{border-color:var(--purple);color:#d9ccff}.editor-hint{margin:6px 0;color:var(--muted);font-size:.8rem}.preview{min-height:220px;padding:14px;border:1px solid var(--line);border-radius:8px;background:#030408;overflow-wrap:anywhere}.preview h2,.preview h3{margin:1em 0 .45em}.preview p{margin:.6em 0}.preview blockquote{margin:1em 0;padding:.2em 1em;border-left:3px solid var(--purple);background:#0a0b14;color:#cbd5e1}.preview pre{padding:12px;border-radius:8px;background:#11131d;overflow:auto}.preview code{font-family:ui-monospace,monospace;color:#c4b5fd}.preview a{color:#7dd3fc;text-decoration:underline}.preview table{border-collapse:collapse;width:100%}.preview th,.preview td{border:1px solid var(--line);padding:7px;text-align:left}.preview hr{border:0;border-top:1px solid var(--line)}
-    .status{min-height:1.5em;margin:10px 0 0;color:#a5e1ff;font-size:.9rem}.error{color:#fda4af}.post-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid var(--line)}.post-row h3{margin:0;font-size:1rem}.post-meta{margin:3px 0 0;color:var(--muted);font-size:.8rem}.post-dates{margin:4px 0 0;color:#8793ad;font-size:.76rem;line-height:1.5}.empty{padding:16px;border:1px dashed var(--line);border-radius:8px;color:var(--muted)}.row-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}.edit{margin:0;padding:7px 10px;background:#101927;color:#bae6fd;border:1px solid #25455c;font-size:.8rem}.foot{margin:34px 0;padding:18px 0;border-top:1px solid var(--line);color:var(--muted);font-size:.82rem}
+    .status{min-height:1.5em;margin:10px 0 0;color:#a5e1ff;font-size:.9rem}.error{color:#fda4af}.post-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid var(--line)}.post-row h3{margin:0;font-size:1rem}.post-meta{margin:3px 0 0;color:var(--muted);font-size:.8rem}.post-dates{margin:4px 0 0;color:#8793ad;font-size:.76rem;line-height:1.5}.sort-control{max-width:340px}.sort-control label{margin-top:12px}.empty{padding:16px;border:1px dashed var(--line);border-radius:8px;color:var(--muted)}.row-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}.edit{margin:0;padding:7px 10px;background:#101927;color:#bae6fd;border:1px solid #25455c;font-size:.8rem}.foot{margin:34px 0;padding:18px 0;border-top:1px solid var(--line);color:var(--muted);font-size:.82rem}
     [hidden]{display:none!important}@media(max-width:560px){.top{align-items:flex-start}.post-row{align-items:flex-start}.post-meta{max-width:240px}.hero{padding-top:24px}}
   </style>
 </head>
@@ -67,6 +67,7 @@
         <section class="panel" aria-labelledby="posts-title">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><h2 id="posts-title">등록된 글</h2><button id="logout-button" class="secondary" type="button" style="margin:0">로그아웃</button></div>
           <p class="small">삭제하면 해당 글 파일이 저장소에서 제거되고, Pages 배포 후 목록에서도 사라집니다.</p>
+          <div class="sort-control"><label for="post-sort">정렬 기준</label><select id="post-sort" aria-label="등록된 글 정렬 기준"><option value="updated-desc">최근 수정한 순</option><option value="updated-asc">오래 수정하지 않은 순</option><option value="created-desc">최근 작성한 순</option><option value="created-asc">오래된 작성 순</option><option value="title-asc">제목 가나다순</option><option value="title-desc">제목 역순</option></select></div>
           <p id="list-status" class="status" role="status" aria-live="polite"></p>
           <div id="post-list"></div>
         </section>
@@ -93,6 +94,15 @@
   const loginPanel = byId("login-panel");
   const editor = byId("editor");
   const tokenInput = byId("token");
+  const sortSelect = byId("post-sort");
+  try {
+    const savedSort = localStorage.getItem("gmrtor-post-sort");
+    if (savedSort && Array.from(sortSelect.options).some((option) => option.value === savedSort)) sortSelect.value = savedSort;
+  } catch (_) {}
+  sortSelect.addEventListener("change", () => {
+    try { localStorage.setItem("gmrtor-post-sort", sortSelect.value); } catch (_) {}
+    renderPosts(loadedPosts);
+  });
 
   function escapeHtml(value) {
     return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#39;");
@@ -345,11 +355,6 @@
         } catch (_) {}
         return {name:file.name, path:file.path, sha:file.sha, title, category, description, date, markdown, createdAt, updatedAt};
       }));
-      posts.sort((a,b) => {
-        const aTime = new Date(a.updatedAt || a.date || 0).getTime() || 0;
-        const bTime = new Date(b.updatedAt || b.date || 0).getTime() || 0;
-        return bTime - aTime || b.name.localeCompare(a.name);
-      });
       loadedPosts = posts;
       renderPosts(loadedPosts);
       setStatus("list-status", posts.length ? "총 " + posts.length + "개의 글" : "아직 작성한 글이 없습니다.");
@@ -361,14 +366,15 @@
   function renderPosts(posts) {
     const container = byId("post-list");
     container.replaceChildren();
-    if (!posts.length) {
+    const sortedPosts = sortPosts(posts);
+    if (!sortedPosts.length) {
       const empty = document.createElement("p");
       empty.className = "empty";
       empty.textContent = "작성된 글이 없습니다. 위에서 첫 글을 작성해 보세요.";
       container.append(empty);
       return;
     }
-    for (const post of posts) {
+    for (const post of sortedPosts) {
       const row = document.createElement("article");
       row.className = "post-row";
       const text = document.createElement("div");
@@ -398,6 +404,19 @@
       row.append(text, actions);
       container.append(row);
     }
+  }
+
+  function sortPosts(posts) {
+    const mode = sortSelect.value;
+    const timestamp = (value, fallback) => new Date(value || fallback || 0).getTime() || 0;
+    return [...posts].sort((a, b) => {
+      let result = 0;
+      if (mode.startsWith("updated")) result = timestamp(a.updatedAt, a.date) - timestamp(b.updatedAt, b.date);
+      else if (mode.startsWith("created")) result = timestamp(a.createdAt, a.date) - timestamp(b.createdAt, b.date);
+      else result = (a.title || "").localeCompare(b.title || "", "ko");
+      if (mode.endsWith("desc")) result *= -1;
+      return result || (b.name || "").localeCompare(a.name || "");
+    });
   }
 
   function resetEditor() {
@@ -476,7 +495,6 @@
       loadedPosts = isEditing
         ? loadedPosts.map((post) => post.path === path ? updatedPost : post)
         : [updatedPost, ...loadedPosts];
-      loadedPosts.sort((a,b) => new Date(b.updatedAt || b.date || 0) - new Date(a.updatedAt || a.date || 0) || b.name.localeCompare(a.name));
       renderPosts(loadedPosts);
       resetEditor();
       setStatus("write-status", isEditing ? "수정 내용을 저장했습니다. 등록된 글 목록은 바로 갱신했고, 공개 페이지는 Pages 배포 후 반영됩니다." : "글을 저장했습니다. 등록된 글 목록은 바로 갱신했고, 공개 페이지는 Pages 배포 후 나타납니다.");
