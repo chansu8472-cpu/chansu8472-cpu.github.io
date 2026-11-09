@@ -14,7 +14,7 @@
     .panel{margin:18px 0 30px;padding:clamp(20px,4vw,30px);border:1px solid var(--line);border-radius:14px;background:var(--card)}h2{margin:0 0 10px;font-size:1.25rem}p{color:var(--muted)}.guide{padding:15px 17px;border-left:3px solid var(--blue);background:#080d17;font-size:.9rem}.guide ol{margin:8px 0 0;padding-left:20px}.guide a{color:#7dd3fc;text-decoration:underline;text-underline-offset:3px}.small{font-size:.82rem;color:var(--muted)}
     label{display:block;margin:16px 0 6px;font-weight:700;font-size:.9rem}input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:#030408;color:var(--ink);font:inherit}input:focus,select:focus,textarea:focus{outline:2px solid #7c6fe0;outline-offset:1px}textarea{min-height:220px;resize:vertical}button,.button{display:inline-flex;justify-content:center;align-items:center;gap:8px;margin-top:14px;padding:10px 15px;border:0;border-radius:8px;background:linear-gradient(110deg,var(--blue),var(--purple));color:#111322;font:inherit;font-weight:800;font-size:.9rem;cursor:pointer}button:disabled{opacity:.55;cursor:wait}.secondary{background:#121626;color:var(--ink);border:1px solid var(--line)}.delete{margin:0;padding:7px 10px;background:#241018;color:#fecdd3;border:1px solid #51222f;font-size:.8rem}
     .toolbar{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0;padding:10px;border:1px solid var(--line);border-radius:9px;background:#05070d}.tool{margin:0;padding:7px 10px;background:#121626;color:var(--ink);border:1px solid var(--line);font-size:.82rem}.tool:hover{border-color:var(--purple);color:#d9ccff}.editor-hint{margin:6px 0;color:var(--muted);font-size:.8rem}.preview{min-height:220px;padding:14px;border:1px solid var(--line);border-radius:8px;background:#030408;overflow-wrap:anywhere}.preview h2,.preview h3{margin:1em 0 .45em}.preview p{margin:.6em 0}.preview blockquote{margin:1em 0;padding:.2em 1em;border-left:3px solid var(--purple);background:#0a0b14;color:#cbd5e1}.preview pre{padding:12px;border-radius:8px;background:#11131d;overflow:auto}.preview code{font-family:ui-monospace,monospace;color:#c4b5fd}.preview a{color:#7dd3fc;text-decoration:underline}.preview table{border-collapse:collapse;width:100%}.preview th,.preview td{border:1px solid var(--line);padding:7px;text-align:left}.preview hr{border:0;border-top:1px solid var(--line)}
-    .status{min-height:1.5em;margin:10px 0 0;color:#a5e1ff;font-size:.9rem}.error{color:#fda4af}.post-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid var(--line)}.post-row h3{margin:0;font-size:1rem}.post-meta{margin:3px 0 0;color:var(--muted);font-size:.8rem}.empty{padding:16px;border:1px dashed var(--line);border-radius:8px;color:var(--muted)}.row-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}.foot{margin:34px 0;padding:18px 0;border-top:1px solid var(--line);color:var(--muted);font-size:.82rem}
+    .status{min-height:1.5em;margin:10px 0 0;color:#a5e1ff;font-size:.9rem}.error{color:#fda4af}.post-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid var(--line)}.post-row h3{margin:0;font-size:1rem}.post-meta{margin:3px 0 0;color:var(--muted);font-size:.8rem}.post-dates{margin:4px 0 0;color:#8793ad;font-size:.76rem;line-height:1.5}.empty{padding:16px;border:1px dashed var(--line);border-radius:8px;color:var(--muted)}.row-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}.edit{margin:0;padding:7px 10px;background:#101927;color:#bae6fd;border:1px solid #25455c;font-size:.8rem}.foot{margin:34px 0;padding:18px 0;border-top:1px solid var(--line);color:var(--muted);font-size:.82rem}
     [hidden]{display:none!important}@media(max-width:560px){.top{align-items:flex-start}.post-row{align-items:flex-start}.post-meta{max-width:240px}.hero{padding-top:24px}}
   </style>
 </head>
@@ -60,6 +60,7 @@
             <textarea id="body" name="body" placeholder="## 배운 내용&#10;&#10;여기에 글을 작성하세요."></textarea>
             <div id="body-preview" class="preview" hidden aria-label="글 미리보기"></div>
             <button id="save-button" type="submit">글 저장</button>
+            <button id="cancel-edit" class="secondary" type="button" hidden>수정 취소</button>
           </form>
           <p id="write-status" class="status" role="status" aria-live="polite"></p>
         </section>
@@ -86,6 +87,7 @@
   };
   let token = "";
   let busy = false;
+  let editingPost = null;
   const byId = (id) => document.getElementById(id);
   const loginPanel = byId("login-panel");
   const editor = byId("editor");
@@ -226,6 +228,41 @@
     return value.replace(/''/g, "'");
   }
 
+  function getPostBody(markdown) {
+    const match = markdown.match(/^---\s*\r?\n[\s\S]*?\r?\n---\s*\r?\n?([\s\S]*)$/);
+    return match ? match[1].replace(/\s+$/, "") : markdown;
+  }
+
+  function updateFrontMatter(markdown, fields, replacementBody) {
+    const match = markdown.match(/^(---\s*\r?\n)([\s\S]*?)(\r?\n---\s*\r?\n?)([\s\S]*)$/);
+    const lines = match ? match[2].split(/\r?\n/) : [];
+    const body = match ? match[4].replace(/^\r?\n/, "") : markdown;
+    for (const [key, value] of Object.entries(fields)) {
+      const indexes = [];
+      lines.forEach((line, index) => { if (line.startsWith(key + ":")) indexes.push(index); });
+      if (value === "") {
+        for (let i = indexes.length - 1; i >= 0; i--) lines.splice(indexes[i], 1);
+      } else if (indexes.length) {
+        lines[indexes[0]] = key + ": " + value;
+        for (let i = indexes.length - 1; i >= 1; i--) lines.splice(indexes[i], 1);
+      } else {
+        lines.push(key + ": " + value);
+      }
+    }
+    return "---\n" + lines.join("\n") + "\n---\n\n" + (replacementBody === undefined ? body.trimEnd() : replacementBody.trimEnd()) + "\n";
+  }
+
+  function formatTimestamp(value, fallback) {
+    if (value) {
+      const parsed = new Date(value);
+      if (!Number.isNaN(parsed.getTime())) {
+        return new Intl.DateTimeFormat("ko-KR", {year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false,timeZone:"Asia/Seoul"}).format(parsed);
+      }
+    }
+    if (fallback) return fallback + " (시간 기록 없음)";
+    return "기록 없음";
+  }
+
   function localDate() {
     const now = new Date();
     return new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
@@ -277,18 +314,32 @@
         else throw error;
       }
       const markdownFiles = Array.isArray(files) ? files.filter((file) => file.type === "file" && file.name.endsWith(".md")) : [];
-      const posts = [];
-      for (const file of markdownFiles) {
+      const posts = await Promise.all(markdownFiles.map(async (file) => {
         let title = file.name.replace(/^\d{4}-\d{2}-\d{2}-/, "").replace(/\.md$/, "").replace(/-/g, " ");
         let category = "";
+        let description = "";
+        let date = file.name.slice(0, 10);
+        let markdown = "";
+        let createdAt = "";
+        let updatedAt = "";
         try {
           const data = await request(apiContentsPath(file.path, true), token);
-          const markdown = decodeBase64(data.content || "");
+          markdown = decodeBase64(data.content || "");
           title = getFrontMatterValue(markdown, "title") || title;
           category = getFrontMatterValue(markdown, "categories");
+          description = getFrontMatterValue(markdown, "description");
+          date = getFrontMatterValue(markdown, "date").slice(0, 10) || date;
         } catch (_) {}
-        posts.push({name:file.name, path:file.path, sha:file.sha, title, category});
-      }
+        try {
+          const commits = await request("/repos/" + REPO + "/commits?path=" + encodeURIComponent(file.path) + "&per_page=100", token);
+          const commitDate = (entry) => entry && entry.commit && ((entry.commit.committer && entry.commit.committer.date) || (entry.commit.author && entry.commit.author.date)) || "";
+          if (Array.isArray(commits) && commits.length) {
+            updatedAt = commitDate(commits[0]);
+            createdAt = commitDate(commits[commits.length - 1]);
+          }
+        } catch (_) {}
+        return {name:file.name, path:file.path, sha:file.sha, title, category, description, date, markdown, createdAt, updatedAt};
+      }));
       posts.sort((a,b) => b.name.localeCompare(a.name));
       renderPosts(posts);
       setStatus("list-status", posts.length ? "총 " + posts.length + "개의 글" : "아직 작성한 글이 없습니다.");
@@ -316,19 +367,56 @@
       const meta = document.createElement("p");
       meta.className = "post-meta";
       const categoryName = CATEGORIES[post.category] || post.category || "카테고리 없음";
-      meta.textContent = post.name.slice(0, 10) + " · " + categoryName;
-      text.append(heading, meta);
+      meta.textContent = categoryName;
+      const dates = document.createElement("p");
+      dates.className = "post-dates";
+      dates.textContent = "처음 작성 " + formatTimestamp(post.createdAt, post.date) + " · 마지막 수정 " + formatTimestamp(post.updatedAt, post.date);
+      text.append(heading, meta, dates);
       const actions = document.createElement("div");
       actions.className = "row-actions";
+      const edit = document.createElement("button");
+      edit.type = "button";
+      edit.className = "edit";
+      edit.textContent = "수정";
+      edit.addEventListener("click", () => editPost(post));
       const remove = document.createElement("button");
       remove.type = "button";
       remove.className = "delete";
       remove.textContent = "삭제";
       remove.addEventListener("click", () => deletePost(post));
-      actions.append(remove);
+      actions.append(edit, remove);
       row.append(text, actions);
       container.append(row);
     }
+  }
+
+  function resetEditor() {
+    editingPost = null;
+    byId("post-form").reset();
+    byId("write-title").textContent = "새 글 작성";
+    byId("save-button").textContent = "글 저장";
+    byId("cancel-edit").hidden = true;
+    byId("date").value = localDate();
+    byId("body-preview").hidden = true;
+    byId("body-preview").replaceChildren();
+    bodyInput.hidden = false;
+    byId("preview-toggle").setAttribute("aria-pressed", "false");
+    byId("preview-toggle").textContent = "미리보기";
+  }
+
+  function editPost(post) {
+    resetEditor();
+    editingPost = post;
+    byId("write-title").textContent = "글 수정";
+    byId("save-button").textContent = "수정 저장";
+    byId("cancel-edit").hidden = false;
+    byId("title").value = getFrontMatterValue(post.markdown, "title") || post.title;
+    byId("category").value = post.category || "development";
+    byId("date").value = post.date;
+    byId("description").value = post.description;
+    bodyInput.value = getPostBody(post.markdown);
+    setStatus("write-status", "글 내용을 수정한 뒤 ‘수정 저장’을 눌러주세요.");
+    byId("write-title").scrollIntoView({behavior:"smooth",block:"start"});
   }
 
   async function createPost(event) {
@@ -343,24 +431,30 @@
       setStatus("write-status", "제목, 날짜, 카테고리, 글 내용을 모두 확인해 주세요.", true);
       return;
     }
+    const isEditing = Boolean(editingPost);
+    const targetPost = editingPost;
     const slug = title.normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-|-$/g, "") || "post";
     const time = new Date().toTimeString().slice(0, 8).replace(/:/g, "");
-    const path = "_posts/" + date + "-" + slug + "-" + time + ".md";
-    const frontMatter = [
-      "---", "layout: post", "title: " + quoteYaml(title), "date: " + date + " 12:00:00 +0900",
-      "categories: [" + category + "]", description ? "description: " + quoteYaml(description) : "", "---", "", body, ""
-    ].filter((line) => line !== "").join("\n");
+    const path = isEditing ? targetPost.path : "_posts/" + date + "-" + slug + "-" + time + ".md";
+    const frontMatter = isEditing
+      ? updateFrontMatter(targetPost.markdown, {
+          layout:"post", title:quoteYaml(title), date:date + " 12:00:00 +0900",
+          categories:"[" + category + "]", description:description ? quoteYaml(description) : ""
+        }, body)
+      : [
+          "---", "layout: post", "title: " + quoteYaml(title), "date: " + date + " 12:00:00 +0900",
+          "categories: [" + category + "]", description ? "description: " + quoteYaml(description) : "", "---", "", body, ""
+        ].filter((line) => line !== "").join("\n");
     busy = true;
     byId("save-button").disabled = true;
     setStatus("write-status", "GitHub 저장소에 글을 저장하고 있습니다.");
     try {
       await request(apiContentsPath(path, false), token, {
         method:"PUT",
-        body:{message:"Add post: " + title, content:encodeBase64(frontMatter), branch:BRANCH}
+        body:{message:(isEditing ? "Update post: " : "Add post: ") + title, content:encodeBase64(frontMatter), branch:BRANCH, ...(isEditing ? {sha:targetPost.sha} : {})}
       });
-      byId("post-form").reset();
-      byId("date").value = localDate();
-      setStatus("write-status", "글을 저장했습니다. Pages 게시 후 카테고리 목록에 나타납니다.");
+      resetEditor();
+      setStatus("write-status", isEditing ? "수정 내용을 저장했습니다. Pages 배포 후 업데이트됩니다." : "글을 저장했습니다. Pages 배포 후 카테고리 목록에 나타납니다.");
       await loadPosts();
     } catch (error) {
       setStatus("write-status", error.message || "글을 저장하지 못했습니다.", true);
@@ -391,7 +485,7 @@
 
   function logout() {
     token = "";
-    byId("post-form").reset();
+    resetEditor();
     byId("post-list").replaceChildren();
     editor.hidden = true;
     loginPanel.hidden = false;
@@ -402,6 +496,7 @@
   byId("login-button").addEventListener("click", verify);
   tokenInput.addEventListener("keydown", (event) => { if (event.key === "Enter") verify(); });
   byId("post-form").addEventListener("submit", createPost);
+  byId("cancel-edit").addEventListener("click", () => { resetEditor(); setStatus("write-status", "수정을 취소했습니다."); });
   byId("logout-button").addEventListener("click", logout);
 })();
 </script>
